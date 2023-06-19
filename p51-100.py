@@ -598,7 +598,6 @@ def problem_88():
 
 def problem_89():
     roman_txt = [line.strip() for line in open("files/p089_roman.txt", 'r')]
-
     saved_chars = 0
     for num in roman_txt:
         saved_chars += len(num) - len(integer_to_roman(roman_to_integer(num)))
@@ -904,4 +903,4 @@ def problem_100():
 
 
 if __name__ == '__main__':
-    print(problem_61())
+    print(problem_89())

@@ -420,21 +420,16 @@ def roman_to_integer(roman):
     value_map = dict(I=1, V=5, X=10, L=50, C=100, D=500, M=1000)
     out = 0
     idx = len(roman) - 1
-    while True:
-        if idx > 0:
-            cur = roman[idx]
-            prev = roman[idx - 1]
-            if value_map[cur] > value_map[prev]:
-                out += value_map[cur] - value_map[prev]
-                idx -= 2
-            else:
-                out += value_map[cur]
-                idx -= 1
-        elif idx == 0:
-            out += value_map[roman[idx]]
-            break
-        else:
-            break
+    while idx >= 0:
+        cur = roman[idx]
+        prev = roman[idx - 1] if idx > 0 else None
+
+        out += value_map[cur]
+        idx -= 1
+        if prev and value_map[cur] > value_map[prev]:
+            out -= value_map[prev]
+            idx -= 1
+
     return out
 
 
