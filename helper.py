@@ -393,7 +393,7 @@ def conseq_integers(input_list):
     return idx_count
 
 
-def integer_to_roman(integer):
+def integer_to_roman2(integer):
     value_map = dict(I=1, V=5, X=10, L=50, C=100, D=500, M=1000)
     char_order = sorted(value_map, key=value_map.get, reverse=True)
     out = ''
@@ -416,19 +416,27 @@ def integer_to_roman(integer):
     return out
 
 
+def integer_to_roman(integer):
+    value_map = [(1000, 'M'), (900, 'CM'), (500, 'D'), (400, 'CD'), (100, 'C'), (90, 'XC'), (50, 'L'), (40, 'XL'),
+                 (10, 'X'), (9, 'IX'), (5, 'V'), (4, 'IV'), (1, 'I')]
+    out = ''
+
+    for val, roman in value_map:
+        out += roman * (integer // val)
+        integer %= val
+
+    return out
+
+
 def roman_to_integer(roman):
     value_map = dict(I=1, V=5, X=10, L=50, C=100, D=500, M=1000)
     out = 0
-    idx = len(roman) - 1
-    while idx >= 0:
-        cur = roman[idx]
-        prev = roman[idx - 1] if idx > 0 else None
+    prev = 0
 
-        out += value_map[cur]
-        idx -= 1
-        if prev and value_map[cur] > value_map[prev]:
-            out -= value_map[prev]
-            idx -= 1
+    for cur in reversed(roman):
+        value = value_map[cur]
+        out += value if value >= prev else -value
+        prev = value
 
     return out
 
