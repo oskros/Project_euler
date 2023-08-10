@@ -226,7 +226,7 @@ def problem_111():
         for i in range(0, len(num)):
             n = n*10+num[i]
 
-        rm = rabin_miller(n)
+        rm = miller_rabin(n)
         return n if rm else 0
 
     def recurse(basedigit, startpos, level, fill=False):
@@ -650,9 +650,9 @@ def problem_146():
             continue
         if n2 % 9 == 0 or n2 % 13 == 0 or n2 % 27 == 0:
             continue
-        if rabin_miller(n2 + 1) and rabin_miller(n2 + 3) and rabin_miller(n2 + 7) and rabin_miller(
-                        n2 + 9) and rabin_miller(n2 + 13) and rabin_miller(n2 + 27) and not rabin_miller(
-                        n2 + 19) and not rabin_miller(n2 + 21):
+        if miller_rabin(n2 + 1) and miller_rabin(n2 + 3) and miller_rabin(n2 + 7) and miller_rabin(
+                        n2 + 9) and miller_rabin(n2 + 13) and miller_rabin(n2 + 27) and not miller_rabin(
+                        n2 + 19) and not miller_rabin(n2 + 21):
             out += n
     return out
 

@@ -62,7 +62,7 @@ def problem_233(lim=10**11):
     Note that in case the limit is 10^11, solution 4) and 5) will be disregarded, since the smallest non-gaussian primes
     are 5 and 13, and 5^52 > 5^17*13 > 10^11
 
-    To solve the problem, we define the gaussian prime sieve which returns 2 lists, lets call them 'P' and 'NPM'.
+    To solve the problem, we define the non-gaussian prime sieve which returns 2 lists, lets call them 'P' and 'NPM'.
     'P' contains all primes below the limit which are NOT gaussian primes, and 'NPM' contains all numbers below limit
     which are not a multiple of elements in 'P'.
     We can then iterate through sets of primes in 'P' for each case described above to get the minimum solution for that
@@ -80,7 +80,7 @@ def problem_233(lim=10**11):
     # The largest prime we could need looking at the 5 solutions above, is p < lim/(p_1^3 * p_2^2)
     # where p_1 and p_2 are the two smallest non-gaussian primes (5 and 13)
     prime_lim = lim // (5**3*13**2) + 1
-    npm, primes = gaussian_prime_sieve(prime_lim)
+    npm, primes = nongaussian_prime_sieve(prime_lim)
     tot_sum = 0
 
     # Solution 1)
@@ -388,7 +388,7 @@ def problem_387(no_digits=14):
 
     def strong_harshad(n):
         try:
-            return rabin_miller(n//digit_sum(n))
+            return miller_rabin(n // digit_sum(n))
         except ZeroDivisionError:
             return False
 
@@ -398,7 +398,7 @@ def problem_387(no_digits=14):
             is_strong_harshad = strong_harshad(prev_num)
             for i in range(10):
                 tmp = prev_num * 10 + i
-                if is_strong_harshad and rabin_miller(tmp):
+                if is_strong_harshad and miller_rabin(tmp):
                     out_lst.append(tmp)
                 elif harshad(tmp):
                     out_lst += make_prime_strong_rtrunc_harshads(length-1, tmp)
@@ -485,4 +485,4 @@ def problem_719(n=1000000):
 
 
 if __name__ == '__main__':
-    print(problem_719())
+    print(problem_233())

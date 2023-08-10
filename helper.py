@@ -818,10 +818,10 @@ def palindromic_numbers_below(n):
     return out
 
 
-def integers_on_circle(N, radius=False):
+def integers_on_circle(n):
     # Number of integer coordinates on a circle going through (0,0), (0,N), (N,0) and (N,N) if radius=False.
     # If radius=True, then number of integer coordinates on circle with radius N
-    # Proof of this seen in 3blue1browns video about lattice points (pi in prime numbers)
+    # Proof of this is seen in 3blue1browns video about lattice points (pi in prime numbers)
     @Memoize
     def chi(x):
         tmp = x % 4
@@ -831,19 +831,19 @@ def integers_on_circle(N, radius=False):
             return 1
         return 0
 
-    pf_dict = sy.factorint(N)
+    pf_dict = sy.factorint(n)
     out = 4
-    multiply = 1 if radius else 2
     for key in pf_dict:
-        out *= sum(chi(key)**power for power in range(multiply*pf_dict[key] + 1))
+        out *= sum(chi(key)**power for power in range(pf_dict[key] + 1))
     return out
 
 
 def find_lattice_patterns():
     @Memoize
     def get_attempts(p1, p2, p3, p4, p5):
+        print(p1, p2, p3, p4, p5)
         curnum = 5**p1 * 13**p2 * 17**p3 * 29**p4 * 37**p5
-        ioc = integers_on_circle(curnum, False)
+        ioc = integers_on_circle(curnum)
 
         if ioc == 420:
             return True
@@ -865,7 +865,11 @@ def find_lattice_patterns():
     return [key[0] for key, value in get_attempts.cache.items() if value is True]
 
 
-def gaussian_prime_sieve(limit):
+def nongaussian_prime_sieve(limit):
+    """
+    Returns all nongaussian primes (primes which are not complex primes) below a given limit, and a list of numbers
+    which are not multiples of the calculated nongaussian primes
+    """
     limit += 1
     not_prime = set()
     primes = []
@@ -889,7 +893,7 @@ def gaussian_prime_sieve(limit):
 
 
 @Memoize
-def rabin_miller(n):
+def miller_rabin(n):
     if n < 2:
         return False
     witnesses = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53]
@@ -914,71 +918,9 @@ def rabin_miller(n):
     return True
 
 
-def continue_check():
-    x = input("Very slow code, do you wish to continue? (Y/N)\n")
-    if x.upper() == 'Y':
-        return
-    if x.upper() == 'N':
-        sys.exit()
-    else:
-        print("Input not recognised, valid inputs are 'Y' and 'N'")
-        continue_check()
-
-
-def identity(x):
-    """Do nothing and return the variable untouched"""
-    return x
-
-
-def sorted_iterable(iterable, key=None, buffer=100):
-    """sorts an "almost sorted" (infinite) iterable
-
-    :param iterable: iterable
-    :param key: function used as sort key
-    :param buffer: int size of buffer. elements to swap should not be further than that
-    """
-    key = key or identity
-    from sortedcontainers import SortedListWithKey
-    b = SortedListWithKey(key=key)
-    for x in iterable:
-        if buffer and len(b) >= buffer:
-            res = b.pop(0)
-            yield res
-        b.add(x)
-    for x in b:  # this never happens if iterable is infinite
-        yield x
-
-
-def compress(iterable, key=identity, buffer=None):
-    """
-    generates (item,count) pairs by counting the number of consecutive items in iterable)
-
-    :param iterable: iterable, possibly infinite
-    :param key: optional function defining which elements are considered equal
-    :param buffer: optional integer. if defined, iterable is sorted with this buffer
-
-    """
-    key = key or identity
-
-    if buffer:
-        iterable = sorted_iterable(iterable, key, buffer)
-
-    prev, count = None, 0
-    for item in iterable:
-        if count and key(item) == key(prev):
-            count += 1
-        else:
-            if count:  # to skip initial junk
-                yield prev, count
-            prev = item
-            count = 1
-    if count:
-        yield prev, count
-
-
 start_time = timeit.default_timer()
 
 
 if __name__ == '__main__':
-    pass
+    print(find_lattice_patterns())
 

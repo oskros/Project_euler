@@ -339,7 +339,7 @@ def problem_35():
     for p in plist:
         str_p = str(p)
         perms = [str_p[i:] + str_p[:i] for i in range(1, len(str_p)+1)]
-        if all(rabin_miller(int(x)) for x in perms):
+        if all(miller_rabin(int(x)) for x in perms):
             out += 1
     return out
 
@@ -350,7 +350,7 @@ def problem_36():
 
 def problem_37():
     primes = [x for x in primes_sieve(10**6) if x > 10]
-    return sum(p for p in primes if all(rabin_miller(p%10**i) and rabin_miller(p//10**i) for i in range(1, len(str(p)))))
+    return sum(p for p in primes if all(miller_rabin(p % 10 ** i) and miller_rabin(p // 10 ** i) for i in range(1, len(str(p)))))
 
 
 def problem_38():
@@ -386,7 +386,7 @@ def problem_41():
         digits.pop(-1)
     perms = [int(''.join(map(str, x))) for x in itertools.permutations(digits)]
 
-    while not rabin_miller(perms[-1]):
+    while not miller_rabin(perms[-1]):
         perms.pop(-1)
     return perms[-1]
 
@@ -487,7 +487,7 @@ def problem_49():
         for j, p2 in enumerate(primes[i+1:]):
             if sorted(str(p1)) == sorted(str(p2)):
                 p3 = 2*p2-p1
-                if rabin_miller(p3) and sorted(str(p3)) == sorted(str(p2)) and p3 < 10000:
+                if miller_rabin(p3) and sorted(str(p3)) == sorted(str(p2)) and p3 < 10000:
                     return int(str(p1)+str(p2)+str(p3))
 
 

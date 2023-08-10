@@ -10,7 +10,7 @@ def problem_51():
 
         composites = 0
         for i in range(int(dig)+1, 10):
-            if not rabin_miller(int(p.replace(dig, str(i)))):
+            if not miller_rabin(int(p.replace(dig, str(i)))):
                 composites += 1
             if composites > 1:
                 break
@@ -73,13 +73,13 @@ def problem_60():
 
     for ix, x in enumerate(plist):
         for iy, y in enumerate(plist[ix:]):
-            if all(rabin_miller(x) for x in cl(x, y)):
+            if all(miller_rabin(x) for x in cl(x, y)):
                 for iw, w in enumerate(plist[ix+iy:]):
-                    if all(rabin_miller(x) for x in cl(x, w) + cl(y, w)):
+                    if all(miller_rabin(x) for x in cl(x, w) + cl(y, w)):
                         for iz, z in enumerate(plist[ix+iy+iw:]):
-                            if all(rabin_miller(x) for x in cl(x, z) + cl(y, z) + cl(w, z)):
+                            if all(miller_rabin(x) for x in cl(x, z) + cl(y, z) + cl(w, z)):
                                 for k in plist[ix+iy+iw+iz:]:
-                                    if all(rabin_miller(x) for x in cl(x, k) + cl(y, k) + cl(z, k) + cl(w, k)):
+                                    if all(miller_rabin(x) for x in cl(x, k) + cl(y, k) + cl(z, k) + cl(w, k)):
                                         return x+y+z+w+k
 
 
