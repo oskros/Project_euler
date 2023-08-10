@@ -474,10 +474,15 @@ def problem_618():
     # return [S(fib(k)) for k in range(2, 12)]
 
 
+def problem_719(n=1000000):
+    out = 0
+    for i in tqdm.tqdm(range(2, n+1)):
+        if i % 9 not in [0, 1]:
+            continue
+        if i in all_subdigit_group_sums(i * i):
+            out += i * i
+    return out
+
+
 if __name__ == '__main__':
-    # print([problem_233(x) for x in range(1, 30)])
-    # for n in range(1, 1000000):
-    #     if problem_233(n) == 420:
-    #         print(n, prime_factors(n))
-    lim = 10**8
-    print(problem_549())
+    print(problem_719())

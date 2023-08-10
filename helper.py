@@ -1,5 +1,6 @@
 import itertools
 import copy
+import tqdm
 import time
 import timeit
 import math
@@ -225,9 +226,39 @@ def cont_frac(s, degree):
 
 def digit_sum(n):
     r = 0
-    while n:
-        r, n = r + n % 10, n // 10
+    while n > 0:
+        r += n % 10
+        n //= 10
     return r
+
+
+def all_digit_sums(n):
+    r = 0
+    while n < 0:
+        r += n % 10
+        n //= 10
+    return r
+
+
+def all_subdigit_groups(str_n):
+    if not str_n:
+        return [[]]
+    if len(str_n) == 1:
+        return [[str_n]]
+    if len(str_n) == 2:
+        return [[str_n], list(str_n)]
+
+    out = [[str_n]]
+    for i in range(len(str_n), 0, -1):
+        tmp = str_n[:i]
+        for sd in all_subdigit_groups(str_n[i:]):
+            out.append([tmp] + sd)
+
+    return out
+
+
+def all_subdigit_group_sums(n):
+    return [sum(map(int, grp)) for grp in all_subdigit_groups(str(n))]
 
 
 def totient(num):
@@ -949,16 +980,5 @@ start_time = timeit.default_timer()
 
 
 if __name__ == '__main__':
-    m = [[8, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 3, 6, 0, 0, 0, 0, 0],
-         [0, 7, 0, 0, 9, 0, 2, 0, 0],
-         [0, 5, 0, 0, 0, 7, 0, 0, 0],
-         [0, 0, 0, 0, 4, 5, 7, 0, 0],
-         [0, 0, 0, 1, 0, 0, 0, 3, 0],
-         [0, 0, 1, 0, 0, 0, 0, 6, 8],
-         [0, 0, 8, 5, 0, 0, 0, 1, 0],
-         [0, 9, 0, 0, 0, 0, 4, 0, 0]]
-    from pprint import pprint
-    ss = SudokuSolver(m)
-    pprint(ss.grid)
-    print(ss.operations)
+    pass
+
