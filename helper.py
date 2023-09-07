@@ -818,6 +818,21 @@ def palindromic_numbers_below(n):
     return out
 
 
+def fibonacci_naive(n):
+    """
+    sq5 = 5**0.5
+    phi = (1+sq5) / 2
+    psi = (1-sq5) / 2
+    fib =  (phi**n - psi**n) / sq5
+
+    above is accurate until the 72nd fibonacci number - after that digit precision kills results
+    """
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+
+
 def integers_on_circle(n):
     # Number of integer coordinates on a circle going through (0,0), (0,N), (N,0) and (N,N) if radius=False.
     # If radius=True, then number of integer coordinates on circle with radius N
@@ -918,9 +933,29 @@ def miller_rabin(n):
     return True
 
 
+def pythagorean_triplets(limit):
+    c, m = 0, 2
+
+    triplets = []
+    while c < limit:
+        for n in range(1, m):
+            a = m*m - n*n
+            b = 2*m*n
+            c = m*m + n*n
+
+            if c > limit:
+                break
+
+            triplets.append((a, b, c))
+
+        m += 1
+
+    return triplets
+
+
 start_time = timeit.default_timer()
 
 
 if __name__ == '__main__':
-    pass
+    print(pythagorean_triplets(100))
 

@@ -645,6 +645,20 @@ def problem_132():
     return sum(pfs)
 
 
+def problem_133():
+    primes = primes_sieve(100000)
+
+    def prime_factors_repunit(n):
+        pfs = []
+        for prime in primes:
+            modpow = pow(10, 10**n, 9*prime)
+            if modpow == 1:
+                pfs.append(prime)
+        return pfs
+
+    return sum(p for p in primes if p not in prime_factors_repunit(40))
+
+
 def problem_134(lim=10**6):
     primes = primes_sieve(lim+3)[2:]
 
@@ -693,6 +707,32 @@ def problem_136():
                 sols[u*v] += 1
 
     return len([x for x in sols if x == 1])
+
+
+def problem_137():
+    # Using https://oeis.org/A081018, we see that the N'th nugget is simply Fib(2n)*Fib(2n+1)
+    return fibonacci_naive(2 * 15) * fibonacci_naive(2 * 15 + 1)
+
+
+def problem_138(to_find=12):
+    # We generate pythagorean triplets, and check which of these have b*2-a in [-1, 1]
+    # Pattern is discovered where this condition is true only for n_i = m_(i-1), simplifying the test a lot
+    lengths = []
+    m = 2
+    last_m = 1
+    while len(lengths) < to_find:
+        n = last_m
+        height = m*m - n*n
+        width = 4*m*n
+
+        if height-width in [-1, 1]:
+            last_m = m
+            lengths.append(m*m + n*n)
+            # print(n, m)
+
+        m += 1
+
+    return sum(lengths)
 
 
 def problem_144():
@@ -802,6 +842,5 @@ def problem_149():
 
 
 if __name__ == '__main__':
-    out = problem_128(len_search=2000)
-    print(out[-1])
-
+    out = problem_138()
+    print(out)
