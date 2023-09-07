@@ -1,3 +1,5 @@
+import numpy as np
+
 from helper import *
 
 
@@ -453,6 +455,49 @@ def problem_125():
     return sum(found_numbers)
 
 
+def problem_126(max_n):
+    # We are given that a cube of 3x2x1 dimensions has layers:
+    # 22 -> 46 -> 78 -> 118
+
+    # Testing shows that number of cubes on each layer 'n' is equal to
+    # F(0) = (width*depth + width*height + depth*height) * 2
+    # F(n) = F(n-1) + 4*width*depth*height + 8*(n-1)
+
+    def first_layer(width, depth, height):
+        return (width * depth + width * height + depth * height) * 2
+
+    def next_layer(vol, width, depth, height, layer_add):
+        additional = 4 * (width + depth + height)
+        return vol + additional + layer_add
+
+    # Trial and error gives an upper bound of about 20 times the N we are looking for - this is not necessarily true for
+    # N > 1000
+    max_m = max_n * 20
+
+    out = defaultdict(int)
+    for w in range(1, max_m):
+        for d in range(1, w+1):
+            # Height can minimum be 1, so if w*d*2 > max_m, we have exceeded the boundary
+            if w*d*2 > max_m:
+                break
+
+            for h in range(1, d+1):
+                volume = first_layer(w, d, h)
+                if volume > max_m:
+                    break
+
+                out[volume] += 1
+
+                # next layers
+                layer_addon = 0
+                while layer_addon < max_m and volume < max_m:
+                    volume = next_layer(volume, w, d, h, layer_addon)
+                    out[volume] += 1
+                    layer_addon += 8
+
+    return min(k for k, v in out.items() if v == max_n)
+
+
 def problem_127(lim=120000):
     # It follows that hcf(b, c) and hfc(c, a) must also be 1 since a + b = c
     # It also follows that radical(a*b*c) = radical(a)*radical(b)*radical(c) if hfc(a, b) == 1
@@ -465,6 +510,70 @@ def problem_127(lim=120000):
             if radicals[a]*radicals[b]*radicals[c] < c and hcf(a, b) == 1:
                 c_sum += c
     return c_sum
+
+
+def problem_128(len_search=2000):
+    """
+    The below function can be used to generate an ordered list of hexagonal coordinates for each number. Using the
+    get_neighbors function and manually checking, we conclude that only numbers with a in [0, -1] are candidates for
+    having differences with 3 neighbors being prime.
+
+    def iteration_order(dimensions):
+        order = [0, 0, 0]
+        if dimensions:
+            yield [0, 0]
+        for dim in range(1, dimensions):
+            order[1] = dim
+            for j in range(6):
+                sgn = -(j % 2) or 1
+                idx = j % 3
+                for _ in range(dim):
+                    yield [order[0]-order[2], order[1]-order[0]]
+                    order[idx] += sgn
+    """
+    def hexagonal_number(x, y):
+        if x == y == 0:
+            return 1
+
+        quadrant = 0
+        while y <= 0 or x < 0:
+            y, x = y + x, -y
+            quadrant += 1
+        n = y + x
+        return 2 + n*(3*(n-1) + quadrant) + x
+
+    def get_neighbors(x, y):
+        yield x + 1, y
+        yield x + 1, y - 1
+        yield x, y - 1
+        yield x, y + 1
+        yield x - 1, y
+        yield x - 1, y + 1
+
+    # Trial and error shows that we are only interested in cases where the first coordinate is equal to 0 or -1
+    # So we can loop over b until we've reached the required number of values
+    final = []
+    b = 0
+    sieve = LookupSieve(1_000_000)
+    while len(final) < len_search:
+        for a in [0, -1]:
+            val = hexagonal_number(a, b)
+
+            # Trial and error shows that numbers ending in 2,3,4,5,6 cannot have 3 prime difference neighbors (except 2)
+            if val % 10 in [2, 3, 4, 5, 6] and val != 2:
+                continue
+            not_primes = 0
+            for nb in get_neighbors(a, b):
+                if not sieve.is_prime(abs(val - hexagonal_number(*nb))):
+                    not_primes += 1
+                if not_primes > 3:
+                    break
+            if not_primes == 3:
+                final.append(val)
+
+        b += 1
+
+    return final
 
 
 def problem_129(max_n=10**6):
@@ -615,7 +724,7 @@ def problem_144():
 
 
 def problem_145(lim=10**9):
-    continue_check()
+    # continue_check()
 
     def is_reversible(n):
         num = n
@@ -693,4 +802,6 @@ def problem_149():
 
 
 if __name__ == '__main__':
-    print(problem_146())
+    out = problem_128(len_search=2000)
+    print(out[-1])
+

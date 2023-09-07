@@ -337,15 +337,15 @@ def problem_347(lim=10**3):
 
 
 def problem_357(max_num=10**8):
-    sieve = BoolPrimesSieve(max_num+1)
+    sieve = LookupSieve(max_num + 1)
     out = 1
     for n in range(2, max_num+1, 4):
-        if not sieve.bool_is_prime(1 + n):
+        if not sieve.is_prime(1 + n):
             continue
         for d in range(2, int(n**0.5) + 1):
             if n % d != 0:
                 continue
-            if not sieve.bool_is_prime(int(d + n/d)):
+            if not sieve.is_prime(int(d + n / d)):
                 break
         else:
             out += n
@@ -412,7 +412,7 @@ def problem_493():
 
 
 def problem_549(lim=10**8):
-    bool_sieve = BoolPrimesSieve(lim)
+    bool_sieve = LookupSieve(lim)
 
     def get_smallest_factorial(n):
         best = 0
@@ -427,16 +427,16 @@ def problem_549(lim=10**8):
             best = max(best, cache[prime_power])
             if n == 1:
                 return best
-            if bool_sieve.bool_is_prime(n):
+            if bool_sieve.is_prime(n):
                 return max(best, n)
         return best
 
     cache = dict()
-    primes = [x for x in range(2, lim) if bool_sieve.bool_is_prime(x)]
+    primes = [x for x in range(2, lim) if bool_sieve.is_prime(x)]
 
     out = 0
     for i in range(2, lim+1):
-        if bool_sieve.bool_is_prime(i):
+        if bool_sieve.is_prime(i):
             power = i
             while power <= lim:
                 factorial = result = i

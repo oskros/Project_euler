@@ -258,12 +258,12 @@ def problem_26():
 def problem_27():
     max_conseq = 0
     max_prod = 0
-    sieve = BoolPrimesSieve(15000)
+    sieve = LookupSieve(15000)
 
     for a in range(-999, 1000):
         for b in range(-1000, 1001):
             n = 0
-            while sieve.bool_is_prime(n**2 + a*n + b):
+            while sieve.is_prime(n ** 2 + a * n + b):
                 n += 1
 
             if n > max_conseq:

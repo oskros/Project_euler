@@ -134,17 +134,17 @@ def primes_sieve(limit, non_primes=False):
     return primes
 
 
-class BoolPrimesSieve:
+class LookupSieve:
     def __init__(self, lim):
         self.lim = lim
-        self.sieve = self.bool_primes_sieve()
+        self.sieve = self.build_sieve()
 
-    def bool_is_prime(self, x):
-        if x & 1 == 0:
+    def is_prime(self, x):
+        if not x & 1:
             return x == 2
         return self.sieve[x >> 1]
 
-    def bool_primes_sieve(self):
+    def build_sieve(self):
         half = self.lim >> 1
         sieve = [True]*half
         sieve[0] = False
@@ -922,5 +922,5 @@ start_time = timeit.default_timer()
 
 
 if __name__ == '__main__':
-    print(find_lattice_patterns())
+    pass
 
