@@ -1,6 +1,7 @@
 import itertools
 import copy
 import tqdm
+import gmpy2
 import time
 import timeit
 import math
@@ -933,29 +934,34 @@ def miller_rabin(n):
     return True
 
 
-def pythagorean_triplets(limit):
-    c, m = 0, 2
+def primitive_pythagorean_triplets(limit, dtype=np.int32):
+    u = np.mat(' 1  2  2; -2 -1 -2; 2 2 3')
+    a = np.mat(' 1  2  2;  2  1  2; 2 2 3')
+    d = np.mat('-1 -2 -2;  2  1  2; 2 2 3')
+    uad = np.array([u, a, d], dtype=dtype)
+    m = np.array([3, 4, 5], dtype=dtype)
+    while m.size:
+        m = m.reshape(-1, 3)
+        if limit:
+            m = m[m[:, 2] <= limit]
+        yield from m
+        m = np.dot(m, uad)
 
-    triplets = []
-    while c < limit:
-        for n in range(1, m):
-            a = m*m - n*n
-            b = 2*m*n
-            c = m*m + n*n
 
-            if c > limit:
-                break
+def all_pythagorean_triplets(limit, only_ab_diff_1=False):
+    for prim in primitive_pythagorean_triplets(limit):
+        if only_ab_diff_1 and not prim[0]-prim[1] in [-1, 1]:
+            continue
 
-            triplets.append((a, b, c))
-
-        m += 1
-
-    return triplets
+        i = prim
+        for j in range(limit // prim[2]):
+            yield i
+            i = i + prim
 
 
 start_time = timeit.default_timer()
 
 
 if __name__ == '__main__':
-    print(pythagorean_triplets(100))
+    print(list(all_pythagorean_triplets(100)))
 

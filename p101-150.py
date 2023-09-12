@@ -1,4 +1,7 @@
+import gmpy2
 import numpy as np
+import pandas as pd
+import tqdm
 
 from helper import *
 
@@ -735,6 +738,140 @@ def problem_138(to_find=12):
     return sum(lengths)
 
 
+def problem_139(max_perimeter=10**8):
+    # height: a/b * c
+    count = 0
+    for triplet in all_pythagorean_triplets(int(max_perimeter//2), only_ab_diff_1=True):
+        a, b, c = triplet
+
+        # big square volume is c*c - triangle volume is a*b/2, so all four triangles is 2*a*b, thereby we have
+        # small_square_volume = c * c - 2 * a * b = (a-b)**2, where last equality comes from pythagoras
+        # we can thus see that c mod a-b must be 0 for tiling to be possible
+
+        if not c % (b-a) and a+b+c < max_perimeter:
+            count += 1
+
+    return count
+
+
+def problem_140():
+    # generating function is a(x) = (x+3x**2)/(1-x-x**2)
+
+    # solving this with diophantine equation solver yields a(x) as an integer if
+    # -(n+3)*x**2 - (n+1)*x + n = 0
+    # =>
+    # x = (-(n+1) - ((n+1)**2 + 4*n*(n+3))**0.5) / (2*(n+3))
+    # as x must be rational, we see that (n+1)**2 + 4*n*(n+3) must be perfect square, or that
+    # r = ((n+1)**2 + 4*n*(n+3))**0.5 must be an integer
+
+    # analysing the pattern below we can find a generating function for r
+    # for n in range(1, 10**5):
+    #     r2 = (n+1)**2 + 4*n*(n+3)
+    #     r = r2 ** 0.5
+    #     if int(r) == r:
+    #         print(n, r)
+
+    def r(k):
+        if k & 1:
+            return fibonacci_naive(2*k) + 2*fibonacci_naive(2*k+2)
+        return 2*fibonacci_naive(2*k) + fibonacci_naive(2*k+2)
+
+    def n(k):
+        return ((44+5*r(k)**2)**0.5 - 7) / 5
+
+    return int(sum(n(i) for i in range(1, 31)))
+
+
+def problem_141():
+    # tot = 0
+    # for n_base in range(1, 100000):
+    #     n = n_base*n_base
+    #     for d in range(2, n_base):
+    #         q, r = divmod(n, d)
+    #         # if not r:
+    #         #     continue
+    #         if q * r == d * d:
+    #             print(f'n={n}, d={d}, q={q}, r={r}, ratio={q/d}')
+    #             tot += n
+    #             break
+
+    tot = 0
+    limit = 10**12
+    sqlim = int(limit ** 0.5) + 1
+    for d in range(2, sqlim):
+        if d % 10 in [1, 3, 7, 9]:
+            continue
+        found = False
+        d3 = d * d * d
+        for y in range(int(d**0.5), 0, -1):
+            y2 = y * y
+            for f in range(1, 4):
+                r = f * y2
+                n = d3 / r + r
+
+                if n > 2*limit:
+                    break
+
+                if n > limit:
+                    continue
+
+                if not gmpy2.is_square(int(n)):
+                    continue
+
+                q = n // d
+                if d * q + r != n:
+                    continue
+
+                tot += n
+                print(f'n={n}, d={d}, q={q}, r={r}, y={y}, ylim={int(d**0.5)}')
+                found = True
+                break
+            if found:
+                break
+
+    return tot
+
+
+def problem_142():
+    # Find the smallest x + y + z with integers x > y > z > 0, such that
+    # x + y = a^2
+    # x - y = b^2
+    # x + z = c^2
+    # x - z = d^2
+    # y + z = e^2
+    # y - z = f^2
+    # are all perfect squares.
+
+    # we can deduce that a^2 > c^2 > e^2, and thus we can iterate over a,b,c to speed up calculation
+    # additionally, we see that a and c must have the same parity, and e must be even
+
+    a = 1
+    while True:
+        a2 = a*a
+
+        for c in range((not a % 2) + 1, a, 2):
+            c2 = c*c
+            for e in range(2, c, 2):
+                e2 = e*e
+                z = int((c2+e2-a2) / 2)
+                if z < 0:
+                    continue
+
+                x = int((a2 + c2 - e2) / 2)
+                if not gmpy2.is_square(x-z):
+                    continue
+
+                y = int((a2 - c2 + e2) / 2)
+                if not gmpy2.is_square(x-y):
+                    continue
+
+                if not gmpy2.is_square(y-z):
+                    continue
+
+                return x+y+z
+        a += 1
+
+
 def problem_144():
     def next_intersect(x0, y0, x1, y1):
         euclidean_dist = (-4*x1 * -4*x1 + y1 * y1) ** 0.5
@@ -842,5 +979,6 @@ def problem_149():
 
 
 if __name__ == '__main__':
-    out = problem_138()
+    out = problem_142()
+    # pd.DataFrame(out).to_clipboard()
     print(out)
