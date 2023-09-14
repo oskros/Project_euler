@@ -943,6 +943,15 @@ def problem_146():
     return out
 
 
+def problem_147():
+    def cnt(x, y):
+        if y > x:
+            x, y = y, x
+        return y*(y-1)*(4*y*y + 4*y + 3)/6 + (x-y)*y*(4*y*y - 1)/3 + x*(x+1)*y*(y+1)/4
+
+    return int(sum(cnt(x, y) for x in range(1, 47+1) for y in range(1, 43+1)))
+
+
 def problem_149():
     @Memoize
     def s(k):
@@ -979,6 +988,6 @@ def problem_149():
 
 
 if __name__ == '__main__':
-    out = problem_142()
+    out = problem_147()
     # pd.DataFrame(out).to_clipboard()
     print(out)

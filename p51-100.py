@@ -515,14 +515,13 @@ def problem_84():
 
 def problem_85():
     max_count = 2e6
-    rect_count = lambda x, y: polygonal(3, x) * polygonal(3, y)
 
     closest = 0
     i, j = 1, 1
     out = (i, j)
 
-    while rect_count(1, j - 1) < max_count:
-        grid = rect_count(i, j)
+    while rectangle_count(1, j - 1) < max_count:
+        grid = rectangle_count(i, j)
         if abs(max_count - grid) < abs(max_count - closest):
             closest = grid
             out = (i, j)
@@ -903,4 +902,4 @@ def problem_100():
 
 
 if __name__ == '__main__':
-    print(problem_89())
+    print(problem_85())

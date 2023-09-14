@@ -959,9 +959,24 @@ def all_pythagorean_triplets(limit, only_ab_diff_1=False):
             i = i + prim
 
 
+def rectangle_count(x, y, include_diagonals=False):
+    if y > x:
+        x, y = y, x
+
+    count = x*(x+1)*y*(y+1)//4
+
+    diag_count = 0
+    if include_diagonals:
+        diag_count = y*(y - 1) * (4*y*y + 4*y + 3)/6 + (x - y)*y*(4*y*y - 1)/3
+        # y = 1: x-1
+        # y = 2: 9 + (x-2)*10
+        # y = 3: 51 + (x-3)*35
+
+    return int(count + diag_count)
+
+
 start_time = timeit.default_timer()
 
 
 if __name__ == '__main__':
-    print(list(all_pythagorean_triplets(100)))
-
+    print(rectangle_count(2, 2, True))
