@@ -1,8 +1,8 @@
+#!/usr/bin/env pypy
 import gmpy2
 import numpy as np
 import pandas as pd
 import tqdm
-
 from helper import *
 
 
@@ -987,7 +987,32 @@ def problem_149():
     return max(max_cols, max_rows, max_diag1, max_diag2)
 
 
+def problem_150():
+    # Slow to complete (~15 minutes), but with a print statement and testing the output, the correct answer is found
+    # after just about 2-3 seconds.
+    triangle_array = []
+    t, s20, s19 = 0, 2 ** 20, 2 ** 19
+    for row in range(1000):
+        r = []
+        for col in range(row+1):
+            t = (615949 * t + 797807) % s20
+            r.append(t-s19)
+        triangle_array.append(r)
+
+    min_sum = float('inf')
+
+    for row in range(1000):
+        for i, val in enumerate(triangle_array[row]):
+            tmp_sum = val
+            for cur_len, next_row in enumerate(triangle_array[row+1:], 2):
+                tmp_sum += sum(next_row[i:i+cur_len])
+                min_sum = min(min_sum, tmp_sum)
+
+        if not row % 5:
+            print(min_sum)
+    return min_sum
+
+
 if __name__ == '__main__':
-    out = problem_147()
-    # pd.DataFrame(out).to_clipboard()
+    out = problem_150()
     print(out)
