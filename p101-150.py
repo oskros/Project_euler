@@ -512,7 +512,7 @@ def problem_127(lim=120000):
     for a in range(1, lim//2):
         for b in range(a + 1, lim - a):
             c = a + b
-            if radicals[a]*radicals[b]*radicals[c] < c and hcf(a, b) == 1:
+            if radicals[a]*radicals[b]*radicals[c] < c and gcd(a, b) == 1:
                 c_sum += c
     return c_sum
 
@@ -583,7 +583,7 @@ def problem_128(len_search=2000):
 
 def problem_129(max_n=10**6):
     def a(n):
-        if hcf(n, 10) != 1:
+        if gcd(n, 10) != 1:
             return 0
         k = x = 1
         while x != 0:
@@ -609,7 +609,7 @@ def problem_130():
     i = 1
     while len(lst) < 25:
         i += 2
-        if hcf(i, 10) == 1 and not is_prime_naive(i) and (i-1) % a(i) == 0:
+        if gcd(i, 10) == 1 and not is_prime_naive(i) and (i - 1) % a(i) == 0:
             lst.append(i)
     return sum(lst)
 
@@ -844,8 +844,8 @@ def problem_142():
     # y - z = f^2
     # are all perfect squares.
 
-    # we can deduce that a^2 > c^2 > e^2, and thus we can iterate over a,b,c to speed up calculation
-    # additionally, we see that a and c must have the same parity, and e must be even
+    # we can deduce that a^2 > c^2 > e^2, and thus we can iterate over a, c, e to speed up calculation
+    # additionally, we see that a and c must have the same parity, and e must be even (from trial and error)
 
     a = 1
     while True:
@@ -855,7 +855,7 @@ def problem_142():
             c2 = c*c
             for e in range(2, c, 2):
                 e2 = e*e
-                z = int((c2+e2-a2) / 2)
+                z = int((-a2 + c2 + e2) / 2)
                 if z < 0:
                     continue
 
@@ -864,14 +864,33 @@ def problem_142():
                     continue
 
                 y = int((a2 - c2 + e2) / 2)
-                if not gmpy2.is_square(x-y):
-                    continue
-
-                if not gmpy2.is_square(y-z):
+                if not gmpy2.is_square(x-y) or not gmpy2.is_square(y-z):
                     continue
 
                 return x+y+z
         a += 1
+
+
+def problem_143():
+    limit = 120000
+
+    triples = set()
+    for m in range(2, int(limit ** 0.5)):
+        for n in range(1, m):
+            if gcd(m, n) != 1:
+                continue
+            a, b, c = m*m-n*n, 2*m*n+n*n, m*m+n*n+m*n
+            if c > limit:
+                break
+            for i in range(1, limit // c + 1):
+                triples.add((a * i, b * i, c * i))
+
+    index = defaultdict(set)
+    for a, b, c in triples:
+        index[a].add(b)
+        index[b].add(a)
+
+    return sum({p + r + q for p, r, c in triples for q in index[p] & index[r] if p + r + q <= limit})
 
 
 def problem_144():
@@ -1031,9 +1050,4 @@ def problem_150():
 
 
 if __name__ == '__main__':
-    rows = 7500
-    vb = False
-    last = 10
-    # print(problem_148(rows, vb, last))
-    # print('=====================NALG!================')
-    print(problem_148_test(10**9))
+    print(problem_143())

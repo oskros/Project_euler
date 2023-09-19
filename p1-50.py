@@ -326,7 +326,7 @@ def problem_33():
                 num *= a
                 denom *= b
 
-    return denom//hcf(num, denom)
+    return denom // gcd(num, denom)
 
 
 def problem_34():

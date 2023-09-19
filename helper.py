@@ -291,13 +291,22 @@ def totient_sieve(limit):
 
 
 @Memoize
-def hcf(no1, no2):
+def gcd(no1, no2):
     while no1 != no2:
         if no1 > no2:
             no1 -= no2
         elif no2 > no1:
             no2 -= no1
     return no1
+
+
+def gcd_alt(a, b):
+    if b > a:
+        a, b = b, a
+    m = a % b
+    if m == 0:
+        return b
+    return gcd_alt(b, m)
 
 
 def pentag_range_below(n):

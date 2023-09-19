@@ -328,7 +328,7 @@ def problem_73():
     out = []
     for i in range(2, max_no + 1):
         for j in range(1, i):
-            if hcf(i, j) == 1:
+            if gcd(i, j) == 1:
                 out += [(j, i)]
     srt = sorted(out, key=lambda x: x[0]/x[1])
     count = sum([1 for x in srt if 1/3 < x[0]/x[1] < 1/2])
@@ -353,7 +353,7 @@ def problem_75():
 
     for m in range(2, mlimit):
         for n in range(1, m):
-            if (n + m) % 2 == 1 and hcf(n, m) == 1:
+            if (n + m) % 2 == 1 and gcd(n, m) == 1:
                 a = m * m - n * n
                 b = 2 * m * n
                 c = m * m + n * n
