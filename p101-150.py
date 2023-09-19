@@ -1,4 +1,6 @@
 #!/usr/bin/env pypy
+import functools
+
 import gmpy2
 import numpy as np
 import pandas as pd
@@ -952,6 +954,21 @@ def problem_147():
     return int(sum(cnt(x, y) for x in range(1, 47+1) for y in range(1, 43+1)))
 
 
+def problem_148(rows=100):
+    # Pretty slow - 5 minutes ish
+    ranges = []
+    tmp = rows
+    while tmp:
+        tmp //= 7
+        ranges.append(range(1, 8))
+
+    cnt = 0
+    for i, xs in enumerate(itertools.product(*ranges), 1):
+        cnt += math.prod(xs)
+        if i == rows:
+            return cnt
+
+
 def problem_149():
     @Memoize
     def s(k):
@@ -1014,5 +1031,9 @@ def problem_150():
 
 
 if __name__ == '__main__':
-    out = problem_150()
-    print(out)
+    rows = 7500
+    vb = False
+    last = 10
+    # print(problem_148(rows, vb, last))
+    # print('=====================NALG!================')
+    print(problem_148_test(10**9))
